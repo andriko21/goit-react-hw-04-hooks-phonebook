@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-// import style from "./index.module.css";
+import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import Form from "./components/Form/Form";
@@ -18,41 +17,44 @@ const App = () => {
   const [filter, setFilter] = useState("");
 
   const addContact = (data) => {
-    console.log(data); 
-    setContacts((prevState) => [data, ...prevState ],
-    )
-    // setContacts({
-    //   contacts: [data, ...contacts],
-    // });
+    console.log(data);
+    setContacts((prevState) => [data, ...prevState]);
   };
 
+  useEffect(() => {
+    if (localStorage.getItem("contacts")) {
+      setContacts(JSON.parse(localStorage.getItem("contacts")));
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("contacts", JSON.stringify(contacts));
+    } catch {
+      throw new Error();
+    }
+  }, [contacts]);
+
   const changeFilter = (ev) => {
-    // console.log(ev.currentTarget.value);
     setFilter(ev.currentTarget.value);
   };
 
-  // const visibleItems = () => {
-  
-  //   return contacts.filter(({ name }) => 
-  //     name.toLowerCase().includes(filter.toLowerCase())
-  //   );
-  // };
-  
+  const visibleItems = () => {
+    return contacts.filter(({ name }) =>
+      name.toLowerCase().includes(filter.toLowerCase())
+    );
+  };
+
   const deleteContact = (contactID) => {
-   return setContacts(contacts.filter((contact) => contact.id !== contactID));
+    return setContacts(contacts.filter((contact) => contact.id !== contactID));
   };
 
   return (
     <>
       <Form addContactItem={addContact} contacts={contacts} />
       <Filter value={filter} onChange={changeFilter} />
-      <ContactList
-        itemsRender={contacts}
-         deleteItem={deleteContact}
-      />
+      <ContactList itemsRender={visibleItems()} deleteItem={deleteContact} />
     </>
   );
 };
 export default App;
-
-
