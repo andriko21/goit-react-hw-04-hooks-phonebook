@@ -5,7 +5,8 @@ const ContactList = ({ itemsRender, deleteItem }) => (
 
     <div className={style.contacts__container}>
           <h2>Contacts</h2>
-          <ul className={style.list}>
+    <ul className={style.list}>
+      
             {itemsRender.map(({ name, id, number }) => (
               <li className={style.item} key={id}>
                 <p className={style.userName}>{name}: </p>
